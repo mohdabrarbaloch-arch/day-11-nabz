@@ -142,7 +142,7 @@ This is a **teaching set**, not a licensed knowledge base. See
 | Frontend | Vanilla JS + CSS, no build step |
 | Tests | pytest + httpx — **53 passing** |
 
-1,774 lines of Python across 15 modules, plus 965 lines of front-end.
+2,364 lines of Python across 19 modules, plus 965 lines of front-end.
 
 ---
 
@@ -176,6 +176,27 @@ statuses and payloads.
 - Sliding-window rate limiting: 120 req/min general, 10/min on login
 - Security headers incl. HSTS in production; stack traces never reach the client
 - `Settings.validate()` refuses to boot in production with the dev placeholder key
+
+---
+
+## Deployment
+
+The repo ships with `vercel.json` and `api/index.py` for Vercel's Python runtime.
+
+```bash
+npm i -g vercel
+vercel --prod
+```
+
+Set `SECRET_KEY` and `DATABASE_URL` in the Vercel dashboard before the first
+deploy. For anything beyond a demo, point `DATABASE_URL` at a managed Postgres —
+SQLite on a serverless filesystem is ephemeral.
+
+**Status: not deployed.** No Vercel token was available in the build
+environment, so there is no live URL to link. The production build, the full
+test suite and an end-to-end run against a live uvicorn instance all pass
+locally; the deploy itself has not been executed. Saying so is better than
+linking something that 404s.
 
 ---
 
