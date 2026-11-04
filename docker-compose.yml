@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nabz
+      POSTGRES_PASSWORD: nabz
+      POSTGRES_DB: nabz
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nabz -d nabz"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: production
+      SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in your shell or .env}
+      DATABASE_URL: postgresql+psycopg://nabz:nabz@db:5432/nabz
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8000}
+      SEED_ON_STARTUP: ${SEED_ON_STARTUP:-true}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
